@@ -1,5 +1,5 @@
 # Description:
-#   Pong todo
+#   Keeps track of pong competitors' scores to keep that smack-talking in check.
 #
 # Dependencies:
 #   "redis": "0.8.4"
@@ -8,12 +8,13 @@
 #   None
 #
 # Commands:
-#   hubot <player1> beat <player2> - todo1
-#   hubot <player1> versus <player2> - todo2
-#   hubot <player> record - todo3
+#   hubot <player1> beat <player2> - Store match results to history
+#   hubot <player1> versus <player2> - Display players' head-to-head records
+#   hubot <player> record - Display overall record (wins - losses)
 
 Url   = require "url"
 Redis = require "redis"
+
 
 # connect to Redis
 redisUrlEnv = process.env.REDISTOGO_URL
@@ -22,6 +23,8 @@ redisClient = Redis.createClient(info.port, info.hostname)
 if info.auth
   redisClient.auth info.auth.split(":")[1]
 
+
+# listen for commands
 module.exports = (robot) ->
   robot.respond /(\S+) record/i, (msg) ->
     show_player_stats msg, 1
@@ -51,7 +54,6 @@ show_player_stats = (msg) ->
 show_match_stats = (msg) ->
   player1 = msg.match[1]
   player2 = msg.match[2]
-
 
   multi = redisClient.multi()
   multi.hget(player1, player2)
