@@ -42,37 +42,23 @@ show_player_stats = (msg) ->
   multi.hget(player, "losses")
 
   multi.exec (err, replies) ->
-    msg.send "#{player}'s record: #{replies[0]} - #{replies[1]}"
+    msg.send "#{player}'s record: #{replies[0] || 0} - #{replies[1] || 0}"
 
-
-
-#  redisClient.hget player, "wins", (err, value) ->
-#    wins = value || 0
-#    msg.send "wins1 #{wins}"
-#
-#
-#  redisClient.hget player, "losses", (err, value) ->
-#    losses = value || 0
-
-#  msg.send "#{player}'s record: #{wins} - #{losses}"
-#
-#  if wins == 0 and losses == 0
-#    msg.send "#{player} needs to step up their pong game!"
+    if !!replies[0] and !!replies[1]
+      msg.send "¡#{player} needs to step up their pong game!"
 
 
 show_match_stats = (msg) ->
   player1 = msg.match[1]
   player2 = msg.match[2]
 
-  wins = 0
-  redisClient.hget player1, player2, (err, value) ->
-    wins = value if value
 
-  losses = 0
-  redisClient.hget player2, player1, (err, value) ->
-    losses = value if value
+  multi = redisClient.multi()
+  multi.hget(player1, player2)
+  multi.hget(player2, player1)
 
-  msg.send "#{wins} - #{losses}"
+  multi.exec (err, replies) ->
+    msg.send "#{replies[0] || 0} - #{replies[1] || 0}"
 
 
 store_results = (msg) ->
