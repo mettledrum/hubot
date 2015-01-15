@@ -11,6 +11,7 @@
 #   hubot <player1> beat <player2> - Store match results to history
 #   hubot <player1> versus <player2> - Display players' head-to-head records
 #   hubot <player> record - Display overall record (wins - losses)
+#   hubot rankings - List current rankings of all players
 
 Url   = require "url"
 Redis = require "redis"
@@ -36,6 +37,9 @@ module.exports = (robot) ->
     store_results msg, 1
     show_match_stats msg, 1
 
+  robot.respond /rankings/i, () ->
+    show_rankings
+
 
 show_player_stats = (msg) ->
   player = msg.match[1]
@@ -45,7 +49,7 @@ show_player_stats = (msg) ->
   multi.hget(player, "losses")
 
   multi.exec (err, replies) ->
-    msg.send "#{player}'s record: #{replies[0] || 0} - #{replies[1] || 0}"
+    msg.send "#{player}'s record: #{replies[0] or 0} - #{replies[1] or 0}"
 
     if !!replies[0] and !!replies[1]
       msg.send "¡#{player} needs to step up their pong game!"
@@ -60,7 +64,7 @@ show_match_stats = (msg) ->
   multi.hget(player2, player1)
 
   multi.exec (err, replies) ->
-    msg.send "#{replies[0] || 0} - #{replies[1] || 0}"
+    msg.send "#{replies[0] or 0} - #{replies[1] or 0}"
 
 
 store_results = (msg) ->
@@ -70,3 +74,20 @@ store_results = (msg) ->
   redisClient.hincrby(player1, player2, 1)
   redisClient.hincrby(player1, "wins", 1)
   redisClient.hincrby(player2, "losses", 1)
+
+print_player_and_win_pct = (player) ->
+  multi = redisClient.multi()
+  multi.hget(player, "wins")
+  multi.hget(player, "losses")
+
+  multi.exec (err, replies) ->
+    wins = replies[0] or 0
+    losses = replies[1] or 0
+    winPct = (wins / (wins + losses)) * 100
+
+    msg.send "#{player}: #{winPct}%"
+
+show_rankings = () ->
+  multi = redisClient.multi()
+  multi.keys "@*", (err, replies) ->
+    print_player_and_win_pct player for player in replies
