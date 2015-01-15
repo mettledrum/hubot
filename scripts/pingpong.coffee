@@ -19,6 +19,8 @@ Redis = require "redis"
 redisUrlEnv = process.env.REDISTOGO_URL
 info   = Url.parse  redisUrlEnv, true
 redisClient = Redis.createClient(info.port, info.hostname)
+if info.auth
+  redisClient.auth info.auth.split(":")[1]
 
 module.exports = (robot) ->
   robot.respond /(.+) record/i, (msg) ->
