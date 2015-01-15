@@ -91,6 +91,7 @@ print_player_and_win_pct = (player, msg) ->
 
 show_rankings = (msg) ->
   multi = redisClient.multi()
-  multi.keys "@*", (err, replies) ->
+  multi.keys "@*"
+  multi.exec (err, replies) ->
     msg.send replies
     print_player_and_win_pct player, msg for player in replies
