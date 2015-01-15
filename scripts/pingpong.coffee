@@ -37,8 +37,8 @@ module.exports = (robot) ->
     store_results msg, 1
     show_match_stats msg, 1
 
-  robot.respond /rankings/i, () ->
-    show_rankings
+  robot.respond /rankings/i, (msg) ->
+    show_rankings msg, 1
 
 
 show_player_stats = (msg) ->
@@ -75,7 +75,7 @@ store_results = (msg) ->
   redisClient.hincrby(player1, "wins", 1)
   redisClient.hincrby(player2, "losses", 1)
 
-print_player_and_win_pct = (player) ->
+print_player_and_win_pct = (player, msg) ->
   multi = redisClient.multi()
   multi.hget(player, "wins")
   multi.hget(player, "losses")
@@ -87,7 +87,7 @@ print_player_and_win_pct = (player) ->
 
     msg.send "#{player}: #{winPct}%"
 
-show_rankings = () ->
+show_rankings = (msg) ->
   multi = redisClient.multi()
   multi.keys "@*", (err, replies) ->
-    print_player_and_win_pct player for player in replies
+    print_player_and_win_pct player, msg for player in replies
