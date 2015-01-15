@@ -76,11 +76,13 @@ store_results = (msg) ->
   redisClient.hincrby(player2, "losses", 1)
 
 print_player_and_win_pct = (player, msg) ->
+  msg.send player
   multi = redisClient.multi()
   multi.hget(player, "wins")
   multi.hget(player, "losses")
 
   multi.exec (err, replies) ->
+    msg.send replies
     wins = replies[0] or 0
     losses = replies[1] or 0
     winPct = (wins / (wins + losses)) * 100
@@ -90,4 +92,5 @@ print_player_and_win_pct = (player, msg) ->
 show_rankings = (msg) ->
   multi = redisClient.multi()
   multi.keys "@*", (err, replies) ->
+    msg.send replies
     print_player_and_win_pct player, msg for player in replies
