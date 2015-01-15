@@ -52,7 +52,7 @@ show_player_stats = (msg) ->
     msg.send "#{player}'s record: #{replies[0] or 0} - #{replies[1] or 0}"
 
     if !!replies[0] and !!replies[1]
-      msg.send "¡#{player} needs to step up their pong game!"
+      msg.send "#{player} needs to step up their pong game!"
 
 
 show_match_stats = (msg) ->
@@ -83,6 +83,8 @@ print_player_and_win_pct = (player, msg) ->
   multi.exec (err, replies) ->
     wins = replies[0] or 0
     losses = replies[1] or 0
+    msg.send "#{player}'s record: #{wins} - #{losses}"
+
     winPct = (wins / (wins + losses)) * 100
 
     msg.send "#{player}: #{winPct}%"
@@ -91,5 +93,4 @@ show_rankings = (msg) ->
   multi = redisClient.multi()
   multi.keys "@*"
   multi.exec (err, replies) ->
-    msg.send replies[0]
     print_player_and_win_pct player, msg for player in replies[0]
