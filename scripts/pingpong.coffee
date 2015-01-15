@@ -2,7 +2,7 @@
 #   Pong todo
 #
 # Dependencies:
-#   None
+#   "redis": "0.8.4"
 #
 # Configuration:
 #   None
