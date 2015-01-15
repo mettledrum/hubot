@@ -39,8 +39,11 @@ show_player_stats = (msg) ->
 
   wins = 0
   redisClient.hget player, "wins", (err, value) ->
-    msg.send value
+    msg.send "value #{value}"
     wins = value if value
+    msg.send "wins1 #{wins}"
+
+  msg.send "wins2 #{wins}"
 
   losses = 0
   redisClient.hget player, "losses", (err, value) ->
