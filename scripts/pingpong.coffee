@@ -23,13 +23,13 @@ if info.auth
   redisClient.auth info.auth.split(":")[1]
 
 module.exports = (robot) ->
-  robot.respond /(.+) record/i, (msg) ->
+  robot.respond /(\S+) record/i, (msg) ->
     show_player_stats msg, 1
 
-  robot.respond /(.+) versus (.+)/i, (msg) ->
+  robot.respond /(\S+) versus (\S+)/i, (msg) ->
     show_match_stats msg, 1
 
-  robot.respond /(.+) beat (.+)/i, (msg) ->
+  robot.respond /(\S+) beat (\S+)/i, (msg) ->
     store_results msg, 1
     show_match_stats msg, 1
 
