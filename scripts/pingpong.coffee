@@ -35,7 +35,7 @@ module.exports = (robot) ->
 
 
 show_player_stats = (msg) ->
-  player = msg.match[0]
+  player = msg.match[1]
   msg.send player
 
   wins = 0
@@ -53,12 +53,10 @@ show_player_stats = (msg) ->
 
 
 show_match_stats = (msg) ->
-  player1 = msg.match[0]
+  player1 = msg.match[1]
   player2 = msg.match[2]
   msg.send player1
   msg.send player2
-  msg.send msg.match[1]
-
 
   wins = 0
   redisClient.hget player1, player2, (err, value) ->
@@ -72,7 +70,7 @@ show_match_stats = (msg) ->
 
 
 store_results = (msg) ->
-  player1 = msg.match[0]
+  player1 = msg.match[1]
   player2 = msg.match[2]
 
   redisClient.hincrby(player1, player2, 1)
