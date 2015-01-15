@@ -81,9 +81,8 @@ print_player_and_win_pct = (player, msg) ->
   multi.hget(player, "losses")
 
   multi.exec (err, replies) ->
-    wins = replies[0] or 0
-    losses = replies[1] or 0
-    msg.send "#{player}'s record: #{wins} - #{losses}"
+    wins = parseInt(replies[0] or "0", 10 )
+    losses = parseInt(replies[1] or "0", 10 )
 
     winPct = (wins / (wins + losses)) * 100
 
