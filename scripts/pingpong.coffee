@@ -36,22 +36,35 @@ module.exports = (robot) ->
 
 show_player_stats = (msg) ->
   player = msg[0]
-  wins = redisClient.hget(player, "wins") || "0"
-  losses = redisClient.hget(player, "losses") || "0"
+
+  wins = 0
+  redisClient.hget player, "wins", (err, value) ->
+    wins = value if value
+
+  losses = 0
+  redisClient.hget player, "losses", (err, value) ->
+    losses = value if value
 
   msg.send "#{player}'s record: #{wins} - #{losses}"
 
-  if wins == "0" and losses == "0"
+  if wins == 0 and losses == 0
     msg.send "#{player} needs to step up their pong game!"
+
 
 show_match_stats = (msg) ->
   player1 = msg[0]
   player2 = msg[2]
 
-  wins = redisClient.hget(player1, player2)
-  losses = redisClient.hget(player2, player1)
+  wins = 0
+  redisClient.hget player1, player2, (err, value) ->
+    wins = value if value
+
+  losses = 0
+  redisClient.hget player2, player1, (err, value) ->
+    losses = value if value
 
   msg.send "#{wins} - #{losses}"
+
 
 store_results = (msg) ->
   player1 = msg[0]
