@@ -87,6 +87,8 @@ print_player_and_win_pct = (player, msg) ->
     winPct = (wins / (wins + losses)) * 100
 
     msg.send "#{player}: #{winPct}%"
+    #todo format winPct
+    #todo order them...
 
 show_rankings = (msg) ->
   multi = redisClient.multi()
