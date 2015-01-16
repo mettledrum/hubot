@@ -49,18 +49,15 @@ module.exports = (robot) ->
     show_table msg, 1
 
 show_table = (msg) ->
-  multi = redisClient.multi()
-  multi.get("latest_pic")
-  multi.exec (err, reply) ->
-    if !reply
-      msg.send  "/quote  pong cam is down     o          \n" +
-                "   _ 0  .-----\\-----.  ,_0 _    \n" +
-                " o' / \\ |\\     \\     \\    \\ `o  \n" +
-                " __|\\___|_`-----\\-----`__ /|____\n" +
-                "   / |     |          |  | \\    \n" +
-                "           |          |         "
-    else
-      msg.send "real pic here"
+  msg.send "http://192.168.128.15/pong.gif"
+
+#  msg.send  "/quote  pong cam is down     o          \n" +
+#            "   _ 0  .-----\\-----.  ,_0 _    \n" +
+#            " o' / \\ |\\     \\     \\    \\ `o  \n" +
+#            " __|\\___|_`-----\\-----`__ /|____\n" +
+#            "   / |     |          |  | \\    \n" +
+#            "           |          |         "
+
 
 show_player_stats = (msg) ->
   player = msg.match[1]
