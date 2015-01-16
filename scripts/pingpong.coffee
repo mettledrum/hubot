@@ -41,7 +41,6 @@ module.exports = (robot) ->
 
   robot.respond /(\S+)\s+&\s+(\S+)\s+beat\s+(\S+)\s+&\s+(\S+)/i, (msg) ->
     store_doubles_results msg, 1
-    show_doubles_match_stats msg, 1
 
   robot.respond /leaderboard/i, (msg) ->
     show_rankings msg, 1
@@ -86,12 +85,10 @@ show_singles_match_stats = (msg) ->
   multi.hget(player2, player1)
 
   multi.exec (err, replies) ->
-    msg.send "Match recorded. Head-to-head record: #{replies[0] or 0} - #{replies[1] or 0}"
-
-show_doubles_match_stats = (msg) ->
-  msg.send "Match recorded."
+    msg.send "Head-to-head record: #{replies[0] or 0} - #{replies[1] or 0}"
 
 store_singles_results = (msg) ->
+  msg.send "Match recorded."
   player1 = msg.match[1]
   player2 = msg.match[2]
 
@@ -103,6 +100,7 @@ store_singles_results = (msg) ->
   compute_ranking_for(player2)
 
 store_doubles_results = (msg) ->
+  msg.send "Match recorded."
   player1 = msg.match[1]
   player2 = msg.match[2]
   player3 = msg.match[3]
@@ -123,6 +121,7 @@ store_doubles_results = (msg) ->
   compute_ranking_for(player2)
   compute_ranking_for(player3)
   compute_ranking_for(player4)
+
 
 show_rankings = (msg) ->
   multi = redisClient.multi()
