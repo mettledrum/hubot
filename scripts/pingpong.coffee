@@ -49,7 +49,7 @@ module.exports = (robot) ->
     show_table msg, 1
 
 show_table = (msg) ->
-  msg.send "http://192.168.128.15/pong.gif"
+  msg.send "http://192.168.128.15/latest-pic.gif"
 
 #  msg.send  "/quote  pong cam is down     o          \n" +
 #            "   _ 0  .-----\\-----.  ,_0 _    \n" +
