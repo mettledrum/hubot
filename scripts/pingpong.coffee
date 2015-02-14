@@ -11,9 +11,9 @@
 #   hubot status - Show a current snapshot of the table in Denver
 #   hubot <player1> beat <player2> - Record a singles match result
 #   hubot <player1> & <player2> beat <player3> & <player4> - Record a doubles match result
-#   hubot <player1> versus <player2> - Display players' head-to-head singles record
-#   hubot <player1> & <player2> versus <player3> & <player4> - Display players' head-to-head doubles record
-#   hubot <player> record - Display a player's overall record (wins - losses)
+#   hubot <player1> vs <player2> - Display players' head-to-head singles record
+#   hubot <player1> & <player2> vs <player3> & <player4> - Display players' head-to-head doubles record
+#   hubot <player> record - Display a player's overall # of wins and losses (combines singles and doubles matches)
 #   hubot leaderboard singles - List singles rankings
 #   hubot leaderboard doubles - List doubles rankings
 
@@ -35,10 +35,10 @@ module.exports = (robot) ->
   robot.respond /(\S+)\s+record/i, (msg) ->
     show_player_stats msg, 1
 
-  robot.respond /(\S+)\s+versus\s+(\S+)/i, (msg) ->
+  robot.respond /(\S+)\s+vs\s+(\S+)/i, (msg) ->
     show_singles_versus msg, 1
 
-  robot.respond /(\S+)\s+&\s+(\S+)\s+versus\s+(\S+)\s+&\s+(\S+)/i, (msg) ->
+  robot.respond /(\S+)\s+&\s+(\S+)\s+vs\s+(\S+)\s+&\s+(\S+)/i, (msg) ->
     show_doubles_versus msg, 1
 
   robot.respond /(\S+)\s+beat\s+(\S+)/i, (msg) ->
