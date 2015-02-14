@@ -151,7 +151,7 @@ show_rankings = (msg, table) ->
   multi.zrevrangebyscore(table, "+inf", "-inf", "WITHSCORES")
   multi.exec (err, replies) ->
     vals = replies[0]
-    list = ("#{i / 2 + 1}. #{vals[i]} (#{parseInt(vals[i + 1], 10)})" for i in vals.length by 2).join("\n")
+    list = ("#{i / 2 + 1}. #{vals[i]} (#{parseInt(vals[i + 1], 10)})" for i in [0..vals.length - 1] by 2).join("\n")
 
     msg.send(list)
 
