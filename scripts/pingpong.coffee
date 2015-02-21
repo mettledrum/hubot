@@ -73,8 +73,8 @@ show_player_stats = (msg) ->
   player = msg.match[1]
 
   multi = redisClient.multi()
-  multi.hget(player, "wins")
-  multi.hget(player, "losses")
+  multi.hget(leaderboard_name(player), "wins")
+  multi.hget(leaderboard_name(player), "losses")
 
   multi.exec (err, records) ->
     msg.send "#{player}'s record: #{records[0] or 0} - #{records[1] or 0}"
@@ -101,10 +101,12 @@ show_doubles_versus = (msg) ->
   show_head_to_head(msg, winners, losers)
 
 show_head_to_head = (msg, winner, loser) ->
+  winner = leaderboard_name(winner)
+  loser = leaderboard_name(loser)
+
   multi = redisClient.multi()
   multi.hget(winner, loser)
   multi.hget(loser, winner)
-
   multi.exec (err, replies) ->
     msg.send "Head-to-head record: #{replies[0] or 0} - #{replies[1] or 0}"
 
@@ -138,7 +140,7 @@ store_doubles_results = (msg) ->
   update_ratings_doubles(winners, losers)
 
 give_head_to_head_win = (winner, loser) ->
-  redisClient.hincrby(winner, loser, 1)
+  redisClient.hincrby(leaderboard_name(winner), leaderboard_name(loser), 1)
 
 show_rankings_singles = (msg) ->
   show_rankings(msg, "ratings_singles")
@@ -163,8 +165,8 @@ update_ratings_doubles = (winners, losers) ->
 
 update_ratings = (winner, loser, tableName) ->
   multi = redisClient.multi()
-  multi.hget(winner, "rating")
-  multi.hget(loser, "rating")
+  multi.hget(leaderboard_name(winner), "rating")
+  multi.hget(leaderboard_name(loser), "rating")
 
   multi.exec (err, replies) ->
     winnerScore = parseInt(replies[0] or "1200", 10)
@@ -174,14 +176,11 @@ update_ratings = (winner, loser, tableName) ->
     newWinnerScore = elo.newRatingIfWon(winnerScore, loserScore)
     newLoserScore = elo.newRatingIfLost(loserScore, winnerScore)
 
-    redisClient.hset(winner, "rating", newWinnerScore)
-    redisClient.hset(loser, "rating", newLoserScore)
+    redisClient.hset(leaderboard_name(winner), "rating", newWinnerScore)
+    redisClient.hset(leaderboard_name(loser), "rating", newLoserScore)
 
     redisClient.zadd(tableName, newWinnerScore, leaderboard_name(winner))
     redisClient.zadd(tableName, newLoserScore, leaderboard_name(loser))
-
-leaderboard_name = (name) ->
-  name.replace("@","")
 
 form_team_name = (name1, name2) ->
   if name1 < name2
@@ -190,7 +189,11 @@ form_team_name = (name1, name2) ->
     leaderboard_name(name2) + "&" + leaderboard_name(name1)
 
 give_win = (winner) ->
-  redisClient.hincrby(winner, "wins", 1)
+  redisClient.hincrby(leaderboard_name(winner), "wins", 1)
 
 give_loss = (loser) ->
-  redisClient.hincrby(loser, "losses", 1)
+  redisClient.hincrby(leaderboard_name(loser), "losses", 1)
+
+leaderboard_name = (name) ->
+  name.replace("@","").toLowerCase()
+  
