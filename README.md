@@ -26,3 +26,6 @@ A HipChat bot, derived from hubot, for recording ping pong matches.
 
 You may want to get comfortable with `heroku logs` and `heroku restart`
 if you're having issues.
+
+## HipChat Help
+* https://github.com/hipchat/hubot-hipchat
