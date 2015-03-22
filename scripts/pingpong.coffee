@@ -111,7 +111,6 @@ show_head_to_head = (msg, winner, loser) ->
     msg.send "Head-to-head record: #{replies[0] or 0} - #{replies[1] or 0}"
 
 store_singles_results = (msg) ->
-  msg.send "Match recorded."
   winner = msg.match[1]
   loser = msg.match[2]
 
@@ -119,10 +118,11 @@ store_singles_results = (msg) ->
   give_loss(loser)
 
   give_head_to_head_win(winner, loser)
+  msg.send "Match recorded."
+
   update_ratings_singles(winner, loser)
 
 store_doubles_results = (msg) ->
-  msg.send "Match recorded."
   winner1 = msg.match[1]
   winner2 = msg.match[2]
   loser1 = msg.match[3]
@@ -137,6 +137,8 @@ store_doubles_results = (msg) ->
   losers = form_team_name(loser1, loser2)
 
   give_head_to_head_win(winners, losers)
+  msg.send "Match recorded."
+  
   update_ratings_doubles(winners, losers)
 
 give_head_to_head_win = (winner, loser) ->
