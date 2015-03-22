@@ -16,6 +16,7 @@
 #   hubot <player> record - Display a player's overall # of wins and losses (combines singles and doubles matches)
 #   hubot leaderboard singles - List singles rankings
 #   hubot leaderboard doubles - List doubles rankings
+#   Leaderboard Ratings Info: http://en.wikipedia.org/wiki/Elo_rating_system
 
 Url = require "url"
 Redis = require "redis"
@@ -138,7 +139,7 @@ store_doubles_results = (msg) ->
 
   give_head_to_head_win(winners, losers)
   msg.send "Match recorded."
-  
+
   update_ratings_doubles(winners, losers)
 
 give_head_to_head_win = (winner, loser) ->
