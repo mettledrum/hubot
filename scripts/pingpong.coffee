@@ -158,7 +158,7 @@ show_rankings = (msg, table) ->
     vals = replies[0]
     list = ("#{i / 2 + 1}. #{vals[i]} (#{parseInt(vals[i + 1], 10)})" for i in [0..vals.length - 1] by 2).join("\n")
 
-    msg.send(list)
+    msg.send(replaceAll(list, "&", "-")) # workaround for & signs appearing messed up, as of latest hubot/hipchat plugin
 
 update_ratings_singles = (winner, loser) ->
   update_ratings(winner, loser, "ratings_singles")
@@ -186,10 +186,12 @@ update_ratings = (winner, loser, tableName) ->
     redisClient.zadd(tableName, newLoserScore, leaderboard_name(loser))
 
 form_team_name = (name1, name2) ->
-  if name1 < name2
-    leaderboard_name(name1) + "&" + leaderboard_name(name2)
+  l_name_1 = leaderboard_name(name1)
+  l_name_2 = leaderboard_name(name2)
+  if l_name_1 < l_name_2
+    l_name_1 + "&" + l_name_2
   else
-    leaderboard_name(name2) + "&" + leaderboard_name(name1)
+    l_name_2 + "&" + l_name_1
 
 give_win = (winner) ->
   redisClient.hincrby(leaderboard_name(winner), "wins", 1)
@@ -199,4 +201,9 @@ give_loss = (loser) ->
 
 leaderboard_name = (name) ->
   name.replace("@","").toLowerCase()
-  
+
+replaceAll = (string, find, replace) ->
+  string.replace new RegExp(escapeRegExp(find), 'g'), replace
+
+escapeRegExp = (string) ->
+  string.replace /([.*+?^=!:${}()|\[\]\/\\])/g, '\\$1'
